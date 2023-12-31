@@ -135,6 +135,10 @@ function mt:get(id)
 end
 
 function mt:add(id, x, y, w, h)
+    if not self:intersect(x, y, w, h, self.x, self.y, self.w, self.h) then
+        assert(false, "excceed range")
+    end
+
     local node = self:get(id)
     if node then
         del_node(self, self, node.id, node.x, node.y, node.w, node.h)
@@ -154,6 +158,10 @@ end
 
 -- 更新信息,如果w/h为nil，则要求必须当前有该节点的信息
 function mt:update(id, x, y, w, h)
+    if not self:intersect(x, y, w, h, self.x, self.y, self.w, self.h) then
+        assert(false, "excceed range")
+    end
+
     local node = self:get(id)
     if node then
         del_node(self, self, node.id, node.x, node.y, node.w, node.h)
