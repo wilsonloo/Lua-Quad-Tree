@@ -65,4 +65,39 @@ for _, id in ipairs(ret) do
     print("intersect with:", id, ld_x, ld_y, rt_x, rt_y)
 end
 
+print("====================")
+id = "id-102"
+tree:del(id)
+ret = tree:get(id)
+assert(not ret)
+
+print("====================")
+print("====================")
+x, y, w, h = 0, 0, 50, 50
+ret = tree:query(x, y, w, h)
+PrintR.print_r("query ret:", ret)
+assert(ret)
+for _, id in ipairs(ret) do
+    local node = tree:get(id)
+    assert(node, id)
+    local ld_x, ld_y, rt_x, rt_y = tree:intersect(x, y, w, h, node.x, node.y, node.w, node.h)
+    print("intersect with:", id, ld_x, ld_y, rt_x, rt_y)
+    assert(ld_x == x)
+    assert(ld_y == y)
+    assert(rt_x-ld_x == w)
+    assert(rt_y-ld_y == h)
+end
+
+print("====================")
+x, y, w, h = -100, -200, 300, 300
+ret = tree:query(x, y, w, h)
+PrintR.print_r("query ret:", ret)
+assert(ret and #ret == 1)
+for _, id in ipairs(ret) do
+    local node = tree:get(id)
+    assert(node, id)
+    local ld_x, ld_y, rt_x, rt_y = tree:intersect(x, y, w, h, node.x, node.y, node.w, node.h)
+    print("intersect with:", id, ld_x, ld_y, rt_x, rt_y)
+end
+
 print("all successed")
