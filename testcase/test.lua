@@ -53,4 +53,16 @@ for _, id in ipairs(ret) do
     assert(rt_y-ld_y == h)
 end
 
+print("====================")
+x, y, w, h = -100, -200, 300, 300
+ret = tree:query(x, y, w, h)
+PrintR.print_r("query ret:", ret)
+assert(ret and #ret == 2)
+for _, id in ipairs(ret) do
+    local node = tree:get(id)
+    assert(node, id)
+    local ld_x, ld_y, rt_x, rt_y = tree:intersect(x, y, w, h, node.x, node.y, node.w, node.h)
+    print("intersect with:", id, ld_x, ld_y, rt_x, rt_y)
+end
+
 print("all successed")
