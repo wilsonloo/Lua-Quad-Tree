@@ -104,18 +104,25 @@ local function query_intersect(self, x, y, w, h, region, set)
     end
 
     if region.nodes then
-        for _, node in ipairs(region.nodes) do
-            if self:intersect(x, y, w, h, node.x, node.y, node.w, node.h) then
-                set[node.id] = true
-            end
-        end
         assert(not region.children)
-        return
+        if #region.nodes > 0 then
+            for _, node in ipairs(region.nodes) do
+                if self:intersect(x, y, w, h, node.x, node.y, node.w, node.h) then
+                    set[node.id] = true
+                end
+            end
+        else
+            region.nodes = nil
+        end
     end
 
     if region.children then
-        for _, child in ipairs(region.children) do
-            query_intersect(self, x, y, w, h, child, set)
+        if #region.children > 0 then
+            for _, child in ipairs(region.children) do
+                query_intersect(self, x, y, w, h, child, set)
+            end
+        else
+            region.children = nil
         end
     end
 end
