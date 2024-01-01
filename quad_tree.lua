@@ -178,16 +178,21 @@ function mt:update(id, x, y, w, h)
 end
 
 -- 查询与(x, y, w, h) 相交的id列表
-function mt:query(x, y, w, h)
+---@param need_set boolean 是否返回id的即可，true是，false或nil返回列表
+function mt:query(x, y, w, h, need_set)
     local set = {}
     query_intersect(self, x, y, w, h, self, set)
 
     if next(set) then
-        local out = {}
-        for id in pairs(set) do
-            tinsert(out, id)
+        if need_set then
+            return set
         end
-        return out
+
+        local list = {}
+        for id in pairs(set) do
+            tinsert(list, id)
+        end
+        return list
     end
 end
 
