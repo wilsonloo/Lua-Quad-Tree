@@ -42,16 +42,18 @@ local function create_node(id, x, y, w, h)
     }
 end
 
-local function add_to_children(self, id, x, y, w, children)
-    for _, child in ipairs(region.children) do
-        local ld_x, ld_y, rt_x, rt_y = self:intersect(node.x, node.y, node.w, node.h, child.x, child.y, child.w, child.h)
+local add_node
+
+local function add_to_children(self, id, x, y, w, h, children)
+    for _, child in ipairs(children) do
+        local ld_x, ld_y, rt_x, rt_y = self:intersect(x, y, w, h, child.x, child.y, child.w, child.h)
         if ld_x then
-            add_node(self, v.id, ld_x, ld_y, rt_x-ld_x, rt_y-ld_y, child)
+            add_node(self, id, ld_x, ld_y, rt_x-ld_x, rt_y-ld_y, child)
         end
     end
 end
 
-local function add_node(self, id, x, y, w, h, region)
+add_node = function(self, id, x, y, w, h, region)
     if region.nodes then
         if #region.nodes >= self.node_limit then
             if region.w > self.region_min_size and region.h > self.region_min_size then
