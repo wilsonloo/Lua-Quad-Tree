@@ -15,20 +15,20 @@ local function create_region(x, y, w, h)
         y = y,
         w = w,
         h = h,
-        
+
         nodes = nil,
         children = nil,
     }
 end
 
 local function split_region(self, region)
-    local w = region.w/2
-    local h = region.h/2
+    local w = region.w / 2
+    local h = region.h / 2
     local children = {}
-    children[REGION_SLOT_LD] = create_region(region.x, region.y, w, h) -- 左下角
-    children[REGION_SLOT_LT] = create_region(region.x, region.y+region.h/2, w, h) -- 左上角
-    children[REGION_SLOT_RT] = create_region(region.x+w, region.y+h, w, h) -- 右上角
-    children[REGION_SLOT_RD] = create_region(region.x+w, region.y, w, h) -- 右下角
+    children[REGION_SLOT_LD] = create_region(region.x, region.y, w, h)            -- 左下角
+    children[REGION_SLOT_LT] = create_region(region.x, region.y + region.h / 2, w, h) -- 左上角
+    children[REGION_SLOT_RT] = create_region(region.x + w, region.y + h, w, h)    -- 右上角
+    children[REGION_SLOT_RD] = create_region(region.x + w, region.y, w, h)        -- 右下角
     region.children = children
 end
 
@@ -48,12 +48,12 @@ local function add_to_children(self, id, x, y, w, h, children)
     for _, child in ipairs(children) do
         local ld_x, ld_y, rt_x, rt_y = self:intersect(x, y, w, h, child.x, child.y, child.w, child.h)
         if ld_x then
-            add_node(self, id, ld_x, ld_y, rt_x-ld_x, rt_y-ld_y, child)
+            add_node(self, id, ld_x, ld_y, rt_x - ld_x, rt_y - ld_y, child)
         end
     end
 end
 
-add_node = function(self, id, x, y, w, h, region)
+add_node = function (self, id, x, y, w, h, region)
     if region.nodes then
         if #region.nodes >= self.node_limit then
             if region.w > self.region_min_size and region.h > self.region_min_size then
@@ -94,7 +94,7 @@ local function del_node(self, region, id, x, y, w, h)
         for _, child in ipairs(region.children) do
             local ld_x, ld_y, rt_x, rt_y = self:intersect(x, y, w, h, child.x, child.y, child.w, child.h)
             if ld_x then
-                del_node(self, child, ld_x, ld_y, rt_x-ld_x, rt_y - ld_y)
+                del_node(self, child, child.id, ld_x, ld_y, rt_x - ld_x, rt_y - ld_y)
             end
         end
     end
@@ -204,14 +204,13 @@ function mt:intersect(x1, y1, w1, h1, x2, y2, w2, h2)
     local ld_x = mmax(x1, x2)
     local ld_y = mmax(y1, y2)
 
-    local rt_x = mmin(x1+w1, x2+w2)
-    local rt_y = mmin(y1+h1, y2+h2)
+    local rt_x = mmin(x1 + w1, x2 + w2)
+    local rt_y = mmin(y1 + h1, y2 + h2)
 
     if rt_x - ld_x > 0 and rt_y - ld_y > 0 then
         return ld_x, ld_y, rt_x, rt_y
     end
 end
-
 
 local M = {}
 
